@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BarysAuto - Продаж авто</title>
+    <link rel="stylesheet" href="css.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .listing-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+        }
+        .listing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        .listing-img {
+            height: 200px;
+            object-fit: cover;
+            width: 100%;
+        }
+        .price-badge {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #dc3545;
+        }
+        .admin-panel {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        .favorite-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 10;
+        }
+        .card-img-wrapper {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="/">
+                    <img src="img/logo2.png" alt="BarysAuto Logo" style="max-width:160px; height:auto;">
+                    <div class="ms-2 logo-text d-none d-lg-block">Великий авторинок UA</div>
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="mainNavbar">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#listings">Каталог</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="favoritesLink">Улюблене</a>
+                        </li>
+                    </ul>
+
+                    <div class="d-flex align-items-center" id="accountArea">
+                        <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#authModal">
+                            Особистий кабінет
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 col-md-12">
+                        <div class="hero-content">
+                            <h1>Продайте свій автомобіль швидко, безпечно та вигідно.</h1>
+                            <p>Авторинок BarysAuto відкритий для всіх, хто бажає продати автомобіль з пробігом.</p>
+                            <a href="#listings" class="map-link">
+                                <span class="map-icon">📍</span>
+                                <span>Переглянути каталог</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12">
+                        <div class="hero-image">
+                            <img src="img/main-car.png" alt="Автомобіль">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="services-section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <h2 class="services-title">
+                            Як вигідно продати машину на авторинку <span class="brand">BarysAuto</span>
+                        </h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="service-card">
+                            <h3>Самостійно</h3>
+                            <p>Продасте машину за тією ціною, яку захочете, за мінусом вартості машино-місця та можливого торгу.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="service-card">
+                            <h3>На умовах викупу</h3>
+                            <p>Отримаєте «живі» гроші за авто з пробігом за ринковою ціною, швидко, протягом однієї години.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-12 col-sm-12">
+                        <div class="service-card">
+                            <h3>Автокомісійка</h3>
+                            <p>Продаж авто без витрат часу та зайвих витрат, за розумною ціною, погодженою з власником.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+<!-- Панель адмна -->
+        <section id="adminPanel" style="display:none;" class="py-5">
+            <div class="container">
+                <div class="admin-panel">
+                    <h2 class="mb-4">🔧 Панель адміністратора</h2>
+                    <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addListingModal">
+                        ➕ Додати оголошення
+                    </button>
+                    <div id="adminListings"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Listings Section -->
+        <section id="listings" class="py-5 bg-light">
+            <div class="container">
+                <h2 class="mb-4 text-center">Доступні автомобілі</h2>
+                <div id="listingsContainer" class="row">
+                </div>
+            </div>
+        </section>
+    </main>
+
+<!-- Логін/реєстрація -->
+    <div class="modal fade" id="authModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Особистий кабінет</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="nav nav-pills mb-3" id="authTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="login-tab" data-bs-toggle="pill" data-bs-target="#login-pane" type="button" role="tab">Увійти</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="register-tab" data-bs-toggle="pill" data-bs-target="#register-pane" type="button" role="tab">Реєстрація</button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="login-pane" role="tabpanel">
+                            <div class="alert alert-info small mb-3">
+                                <strong>💡 Тестові акаунти:</strong><br>
+                                👤 Користувач: <code>user</code> / <code>user</code><br>
+                                🔧 Адмін: <code>admin</code> / <code>admin</code>
+                            </div>
+                            <form id="loginForm">
+                                <div class="mb-3">
+                                    <label for="loginUsername" class="form-label">Ім'я користувача</label>
+                                    <input id="loginUsername" class="form-control" name="username" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="loginPassword" class="form-label">Пароль</label>
+                                    <input id="loginPassword" type="password" class="form-control" name="password" required>
+                                </div>
+                                <div class="text-danger small mb-2" id="loginError" style="display:none;"></div>
+                                <div class="d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-primary">Увійти</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="tab-pane fade" id="register-pane" role="tabpanel">
+                            <form id="registerForm">
+                                <div class="mb-3">
+                                    <label for="regName" class="form-label">Ім'я</label>
+                                    <input id="regName" class="form-control" name="name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="regUsername" class="form-label">Ім'я користувача</label>
+                                    <input id="regUsername" class="form-control" name="username" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="regPassword" class="form-label">Пароль</label>
+                                    <input id="regPassword" type="password" class="form-control" name="password" required>
+                                </div>
+                                <div class="text-danger small mb-2" id="regError" style="display:none;"></div>
+                                <div class="d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-success">Зареєструватися</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- оголошення -->
+    <div class="modal fade" id="addListingModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="listingModalTitle">Додати оголошення</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="listingForm">
+                        <input type="hidden" id="listingId">
+                        <div class="mb-3">
+                            <label for="listingTitle" class="form-label">Назва *</label>
+                            <input type="text" class="form-control" id="listingTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="listingPrice" class="form-label">Ціна (USD) *</label>
+                            <input type="number" class="form-control" id="listingPrice" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="listingYear" class="form-label">Рік</label>
+                            <input type="number" class="form-control" id="listingYear">
+                        </div>
+                        <div class="mb-3">
+                            <label for="listingMileage" class="form-label">Пробіг (км)</label>
+                            <input type="number" class="form-control" id="listingMileage">
+                        </div>
+                        <div class="mb-3">
+                            <label for="listingDescription" class="form-label">Опис</label>
+                            <textarea class="form-control" id="listingDescription" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="listingImage" class="form-label">URL зображення</label>
+                            <input type="text" class="form-control" id="listingImage" placeholder="img/main-car.png">
+                        </div>
+                        <div class="text-danger small mb-2" id="listingError" style="display:none;"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
+                    <button type="button" class="btn btn-primary" id="saveListingBtn">Зберегти</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer bg-dark text-light py-4">
+        <div class="container text-center">
+            <p class="mb-1">&copy; 2025 BarysAuto. Усі права захищені.</p>
+            <p class="small">Зроблено з ❤️ в Україні</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
